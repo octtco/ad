@@ -1,0 +1,22 @@
+{
+  "seed": "a7133fc534d119991ad502e1d3d161755b24c2e549cc7950916a69ec85c502f4",
+  "seed_source": "Chord|calculator",
+  "display_name": "云屿计算器",
+  "display_name_mode": "auto",
+  "language": "zh-Hans",
+  "subtitle": "Fast math for everyday decisions",
+  "footer_note": "Quick calculations",
+  "feature_badges": [
+    "Calculator"
+  ],
+  "icon_style": "pulse",
+  "palette": {
+    "background_start": "#7C3AED",
+    "background_end": "#EC4899",
+    "accent": "#FDF4FF",
+    "accent_soft": "#DDD6FE",
+    "text": "#FFFFFF",
+    "muted": "#FAE8FF",
+    "glow": "#67E8F9"
+  }
+}

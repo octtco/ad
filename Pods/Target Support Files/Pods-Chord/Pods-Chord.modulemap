@@ -1,0 +1,6 @@
+module Pods_Chord {
+  umbrella header "Pods-Chord-umbrella.h"
+
+  export *
+  module * { export * }
+}

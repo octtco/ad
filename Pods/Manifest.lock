@@ -1,0 +1,34 @@
+PODS:
+  - ActionSheetPicker-3.0 (2.8.0)
+  - Google-Mobile-Ads-SDK (13.5.0):
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - GoogleUserMessagingPlatform (3.1.0)
+  - Masonry (1.1.0)
+  - SVProgressHUD (2.3.1):
+    - SVProgressHUD/Core (= 2.3.1)
+  - SVProgressHUD/Core (2.3.1)
+
+DEPENDENCIES:
+  - ActionSheetPicker-3.0
+  - Google-Mobile-Ads-SDK (= 13.5.0)
+  - Masonry
+  - SVProgressHUD (~> 2.3.1)
+
+SPEC REPOS:
+  trunk:
+    - ActionSheetPicker-3.0
+    - Google-Mobile-Ads-SDK
+    - GoogleUserMessagingPlatform
+    - Masonry
+    - SVProgressHUD
+
+SPEC CHECKSUMS:
+  ActionSheetPicker-3.0: 8f4895dde9df7328e2ecc5593406c7fb52f16764
+  Google-Mobile-Ads-SDK: 2171620c6497804b57dc88b95644cc82e7dfb5b0
+  GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  SVProgressHUD: 4837c74bdfe2e51e8821c397825996a8d7de6e22
+
+PODFILE CHECKSUM: 3cda087e4375a4105b84168779596a16193783de
+
+COCOAPODS: 1.16.2

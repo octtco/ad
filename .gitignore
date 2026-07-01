@@ -1,0 +1,27 @@
+# 1. 系统文件
+.DS_Store
+*~
+
+# 2. Xcode 用户数据
+*.xcuserstate
+*.xcuserdata
+*.mode*
+*.pbxuser
+*.perspectivev3
+xcuserdata/
+
+# 3. 构建产物
+build/
+DerivedData/
+*.ipa
+*.dSYM
+
+# 4. 工作区 (保留.xcworkspace但忽略用户数据)
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# 5. 日志和测试结果
+*.log
+*.xcresult
+*.xcarchive
+TestResults/
