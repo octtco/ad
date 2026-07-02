@@ -17,8 +17,10 @@
 @property (nonatomic, copy, nullable) void (^appOpenAdCompletion)(void);
 @property (nonatomic, strong) GADBannerView *bannerView;
 @property (nonatomic, strong) GADInterstitialAd *interstitialAd;
+@property (nonatomic, strong) NSDate *interstitialAdLoadTime;
 @property (nonatomic, weak) UIViewController *pendingInterstitialViewController;
 @property (nonatomic, strong) GADRewardedAd *rewardedAd;
+@property (nonatomic, strong) NSDate *rewardedAdLoadTime;
 @property (nonatomic, weak) UIViewController *pendingRewardedViewController;
 @property (nonatomic, assign, getter=isLoadingAppOpenAd) BOOL loadingAppOpenAd;
 @property (nonatomic, assign, getter=isShowingAppOpenAd) BOOL showingAppOpenAd;
@@ -202,10 +204,13 @@
     [self ensureInterstitialAdRequestId];
     [self logAdEventWithType:@"interstitial" event:@"show_attempt" adSessionId:self.interstitialAdSessionId adRequestId:self.interstitialAdRequestId adUnitId:[self interstitialAdUnitID] result:@"attempt" detail:@""];
 
-    if (self.interstitialAd) {
+    if (self.interstitialAd && [self isInterstitialAdAvailable]) {
         [self presentInterstitialAdFromViewController:viewController];
         return;
     }
+
+    self.interstitialAd = nil;
+    self.interstitialAdLoadTime = nil;
 
     if (self.isLoadingInterstitialAd) {
         self.pendingInterstitialViewController = viewController;
@@ -264,6 +269,7 @@
         }
 
         self.interstitialAd = interstitialAd;
+        self.interstitialAdLoadTime = [NSDate date];
         self.interstitialAd.fullScreenContentDelegate = self;
         [self logAdEventWithType:@"interstitial" event:@"load_success" adSessionId:sessionId adRequestId:requestId adUnitId:adUnitID result:@"success" detail:@""];
 #if DEBUG
@@ -300,6 +306,7 @@
 #endif
         [self logAdEventWithType:@"interstitial" event:@"show_fail_can_present" adSessionId:self.interstitialAdSessionId ?: @"" adRequestId:self.interstitialAdRequestId ?: @"" adUnitId:[self interstitialAdUnitID] result:@"fail" detail:error.localizedDescription ?: @"unknown"];
         self.interstitialAd = nil;
+        self.interstitialAdLoadTime = nil;
         return;
     }
 
@@ -320,10 +327,13 @@
     [self ensureRewardedAdRequestId];
     [self logAdEventWithType:@"rewarded" event:@"show_attempt" adSessionId:self.rewardedAdSessionId adRequestId:self.rewardedAdRequestId adUnitId:[self rewardedAdUnitID] result:@"attempt" detail:@""];
 
-    if (self.rewardedAd) {
+    if (self.rewardedAd && [self isRewardedAdAvailable]) {
         [self presentRewardedAdFromViewController:viewController];
         return;
     }
+
+    self.rewardedAd = nil;
+    self.rewardedAdLoadTime = nil;
 
     if (self.isLoadingRewardedAd) {
         self.pendingRewardedViewController = viewController;
@@ -382,6 +392,7 @@
         }
 
         self.rewardedAd = rewardedAd;
+        self.rewardedAdLoadTime = [NSDate date];
         self.rewardedAd.fullScreenContentDelegate = self;
         [self logAdEventWithType:@"rewarded" event:@"load_success" adSessionId:sessionId adRequestId:requestId adUnitId:adUnitID result:@"success" detail:@""];
 #if DEBUG
@@ -466,6 +477,26 @@
 
     NSTimeInterval maxCacheDuration = 4 * 60 * 60;
     return [[NSDate date] timeIntervalSinceDate:self.appOpenAdLoadTime] < maxCacheDuration;
+}
+
+- (BOOL)isInterstitialAdAvailable {
+    if (!self.interstitialAd || !self.interstitialAdLoadTime) {
+        return NO;
+    }
+
+    // AdMob 插屏缓存超过 1 小时即过期，展示也不计费
+    NSTimeInterval maxCacheDuration = 60 * 60;
+    return [[NSDate date] timeIntervalSinceDate:self.interstitialAdLoadTime] < maxCacheDuration;
+}
+
+- (BOOL)isRewardedAdAvailable {
+    if (!self.rewardedAd || !self.rewardedAdLoadTime) {
+        return NO;
+    }
+
+    // AdMob 激励缓存超过 1 小时即过期，展示也不计费
+    NSTimeInterval maxCacheDuration = 60 * 60;
+    return [[NSDate date] timeIntervalSinceDate:self.rewardedAdLoadTime] < maxCacheDuration;
 }
 
 - (NSString *)adPresentationBlockerForViewController:(UIViewController *)viewController {
@@ -753,6 +784,7 @@
     } else if (ad == self.interstitialAd) {
         self.showingInterstitialAd = NO;
         self.interstitialAd = nil;
+        self.interstitialAdLoadTime = nil;
         self.interstitialAdSessionId = nil;
         self.interstitialAdRequestId = nil;
         // 补充预加载：dismiss 后立即加载下一条，下次秒出
@@ -762,6 +794,7 @@
     } else if (ad == self.rewardedAd) {
         self.showingRewardedAd = NO;
         self.rewardedAd = nil;
+        self.rewardedAdLoadTime = nil;
         self.rewardedAdSessionId = nil;
         self.rewardedAdRequestId = nil;
         // 补充预加载：dismiss 后立即加载下一条，下次秒出
@@ -789,6 +822,7 @@
     } else if (ad == self.interstitialAd) {
         self.showingInterstitialAd = NO;
         self.interstitialAd = nil;
+        self.interstitialAdLoadTime = nil;
         self.interstitialAdSessionId = nil;
         self.interstitialAdRequestId = nil;
         // 补充预加载：present 失败后也补一条，与 dismiss 分支保持一致
@@ -798,6 +832,7 @@
     } else if (ad == self.rewardedAd) {
         self.showingRewardedAd = NO;
         self.rewardedAd = nil;
+        self.rewardedAdLoadTime = nil;
         self.rewardedAdSessionId = nil;
         self.rewardedAdRequestId = nil;
         // 补充预加载：present 失败后也补一条，与 dismiss 分支保持一致
