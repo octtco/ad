@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly, nullable) id<AppAdProviderProtocol> provider;
 @property (nonatomic, assign, readonly, getter=isReady) BOOL ready;
 @property (nonatomic, assign, readonly, getter=isOAAEnvironment) BOOL OAAEnvironment;
+@property (nonatomic, copy, readonly) NSString *idfa;
 
 + (instancetype)sharedManager;
 

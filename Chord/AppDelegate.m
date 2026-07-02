@@ -7,7 +7,6 @@
 #import "AppAdConfig.h"
 #import "AppAdManager.h"
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
-#import <AdSupport/AdSupport.h>
 
 @implementation AppDelegate
 

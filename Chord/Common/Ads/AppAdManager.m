@@ -8,6 +8,7 @@
 #import "AppMockAdProvider.h"
 #import "Providers/AdMob/AppAdMobProvider.h"
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
 #import <objc/runtime.h>
 
 @interface AppAdManager ()
@@ -53,6 +54,20 @@
 
 - (BOOL)isOAAEnvironment {
     return objc_getClass("OAANodeContext") == Nil;
+}
+
+- (NSString *)idfa {
+    if (@available(iOS 14, *)) {
+        if (ATTrackingManager.trackingAuthorizationStatus != ATTrackingManagerAuthorizationStatusAuthorized) {
+            return @"";
+        }
+    }
+
+    NSString *idfa = ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString;
+    if ([idfa isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
+        return @"";
+    }
+    return idfa ?: @"";
 }
 
 - (void)setupWithConfig:(AppAdConfig *)config {
