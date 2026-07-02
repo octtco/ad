@@ -788,11 +788,19 @@
         self.interstitialAd = nil;
         self.interstitialAdSessionId = nil;
         self.interstitialAdRequestId = nil;
+        // 补充预加载：present 失败后也补一条，与 dismiss 分支保持一致
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self loadInterstitialAdWithCompletion:nil];
+        });
     } else if (ad == self.rewardedAd) {
         self.showingRewardedAd = NO;
         self.rewardedAd = nil;
         self.rewardedAdSessionId = nil;
         self.rewardedAdRequestId = nil;
+        // 补充预加载：present 失败后也补一条，与 dismiss 分支保持一致
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self loadRewardedAdWithCompletion:nil];
+        });
     }
 }
 
