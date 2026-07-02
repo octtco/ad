@@ -129,6 +129,7 @@
 #if DEBUG
             NSLog(@"[Ads] AdMob app open load timeout");
 #endif
+            [weakSelf logAdEventWithType:@"app_open" event:@"load_timeout" adSessionId:sessionId adRequestId:requestId adUnitId:adUnitID result:@"fail" detail:@"10s_timeout"];
             [weakSelf completeAppOpenAdIfNeeded];
         }
     });
@@ -248,6 +249,7 @@
 #if DEBUG
             NSLog(@"[Ads] AdMob interstitial load timeout");
 #endif
+            [weakSelf logAdEventWithType:@"interstitial" event:@"load_timeout" adSessionId:sessionId adRequestId:requestId adUnitId:adUnitID result:@"fail" detail:@"10s_timeout"];
         }
     });
     [GADInterstitialAd loadWithAdUnitID:adUnitID request:[GADRequest request] completionHandler:^(GADInterstitialAd *interstitialAd, NSError *error) {
@@ -365,6 +367,7 @@
 #if DEBUG
             NSLog(@"[Ads] AdMob rewarded load timeout");
 #endif
+            [weakSelf logAdEventWithType:@"rewarded" event:@"load_timeout" adSessionId:sessionId adRequestId:requestId adUnitId:adUnitID result:@"fail" detail:@"10s_timeout"];
         }
     });
     [GADRewardedAd loadWithAdUnitID:adUnitID request:[GADRequest request] completionHandler:^(GADRewardedAd *rewardedAd, NSError *error) {
