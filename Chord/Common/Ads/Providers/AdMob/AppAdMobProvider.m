@@ -208,7 +208,6 @@
 
     if (self.isLoadingInterstitialAd) {
         self.pendingInterstitialViewController = viewController;
-        [self schedulePendingInterstitialTimeoutForViewController:viewController];
         return;
     }
 
@@ -326,7 +325,6 @@
 
     if (self.isLoadingRewardedAd) {
         self.pendingRewardedViewController = viewController;
-        [self schedulePendingRewardedTimeoutForViewController:viewController];
         return;
     }
 
@@ -485,28 +483,6 @@
     }
 
     return @"";
-}
-
-- (void)schedulePendingInterstitialTimeoutForViewController:(UIViewController *)viewController {
-    __weak typeof(self) weakSelf = self;
-    __weak UIViewController *weakViewController = viewController;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (weakSelf.pendingInterstitialViewController == weakViewController) {
-            weakSelf.pendingInterstitialViewController = nil;
-            [weakSelf logAdEventWithType:@"interstitial" event:@"show_skip_pending_timeout" adSessionId:weakSelf.interstitialAdSessionId ?: @"" adRequestId:weakSelf.interstitialAdRequestId ?: @"" adUnitId:[weakSelf interstitialAdUnitID] result:@"skip" detail:@"pending_timeout"];
-        }
-    });
-}
-
-- (void)schedulePendingRewardedTimeoutForViewController:(UIViewController *)viewController {
-    __weak typeof(self) weakSelf = self;
-    __weak UIViewController *weakViewController = viewController;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (weakSelf.pendingRewardedViewController == weakViewController) {
-            weakSelf.pendingRewardedViewController = nil;
-            [weakSelf logAdEventWithType:@"rewarded" event:@"show_skip_pending_timeout" adSessionId:weakSelf.rewardedAdSessionId ?: @"" adRequestId:weakSelf.rewardedAdRequestId ?: @"" adUnitId:[weakSelf rewardedAdUnitID] result:@"skip" detail:@"pending_timeout"];
-        }
-    });
 }
 
 - (void)completeAppOpenAdIfNeeded {
