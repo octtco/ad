@@ -18,7 +18,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [[AppAdManager sharedManager] applicationDidBecomeActive];
-    [self requestTrackingAuthorizationIfNeeded];
+//    NSLog(@"applicationDidBecomeActive");
+//    [self requestTrackingAuthorizationIfNeeded];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -50,14 +51,14 @@
     [[AppAdManager sharedManager] setupWithConfig:config];
 }
 
-- (void)requestTrackingAuthorizationIfNeeded {
-    if (![AppAdManager sharedManager].config.isEnabled) {
-        return;
-    }
-    if (@available(iOS 14, *)) {
-        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-        }];
-    }
-}
+//- (void)requestTrackingAuthorizationIfNeeded {
+//    if (![AppAdManager sharedManager].config.isEnabled) {
+//        return;
+//    }
+//    if (@available(iOS 14, *)) {
+//        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+//        }];
+//    }
+//}
 
 @end

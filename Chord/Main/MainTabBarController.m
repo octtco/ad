@@ -256,7 +256,6 @@
                           imageName:@"my_tab"
                   selectedImageName:nil];
 
-// 由代码生成器③在此处插入功能 Tab 注册代码
 }
 
 @end

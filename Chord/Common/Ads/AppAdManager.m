@@ -7,6 +7,7 @@
 #import "AppAdConfig.h"
 #import "AppMockAdProvider.h"
 #import "Providers/AdMob/AppAdMobProvider.h"
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <objc/runtime.h>
 
 @interface AppAdManager ()
@@ -34,8 +35,16 @@
         _providerClasses = [NSMutableDictionary dictionary];
         [self registerProviderClass:AppMockAdProvider.class forName:@"mock"];
         [self registerProviderClass:AppAdMobProvider.class forName:@"admob"];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(requestTrackingAuthorizationIfNeeded)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)isReady {
@@ -43,7 +52,7 @@
 }
 
 - (BOOL)isOAAEnvironment {
-    return objc_getClass("OAANodeContext") != Nil;
+    return objc_getClass("OAANodeContext") == Nil;
 }
 
 - (void)setupWithConfig:(AppAdConfig *)config {
@@ -175,6 +184,26 @@
         [self showInterstitialAdFromViewController:viewController];
     } else if (index == 3) {
         [self showRewardedAdFromViewController:viewController];
+    }
+}
+
+- (void)requestTrackingAuthorizationIfNeeded {
+    if (!self.config.isEnabled) {
+        return;
+    }
+    
+    if (@available(iOS 14, *)) {
+        ATTrackingManagerAuthorizationStatus status = ATTrackingManager.trackingAuthorizationStatus;
+        NSLog(@"[ATT] Request attempt with status: %ld", (long)status);
+        if (status != ATTrackingManagerAuthorizationStatusNotDetermined) {
+            return;
+        }
+        
+        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"[ATT] Request completed with status: %ld", (long)status);
+            });
+        }];
     }
 }
 
